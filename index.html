@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VolMusCo: Learning Full-Body Motion Control with Volumetric Muscles</title>
+  <meta name="description" content="VolMusCo establishes two-way coupling between deformable volumetric muscles and skeletal dynamics for scalable full-body motion control via model-based reinforcement learning.">
+  <meta property="og:title" content="VolMusCo: Learning Full-Body Motion Control with Volumetric Muscles">
+  <meta property="og:description" content="Two-way coupled volumetric muscle simulation and world-model reinforcement learning for full-body motion control.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://inckieultra.github.io/VolMusCo-Project-Page/">
+  <meta property="og:image" content="https://inckieultra.github.io/VolMusCo-Project-Page/assets/figures/full_video_poster.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+
+  <!-- Fixed Navigation (Appears smoothly as you scroll down past the hero) -->
+  <header id="site-nav" class="site-nav">
+    <div class="nav-inner">
+      <a href="#article-content" class="nav-brand">
+        <span class="nav-brand-dot" aria-hidden="true"></span>
+        <span>VolMusCo</span>
+      </a>
+      <nav class="nav-links" aria-label="Section navigation">
+        <a href="#video">Full Video</a>
+        <a href="#abstract">Abstract</a>
+        <a href="#interactive-viewer">Mesh vs. Surface</a>
+        <a href="#gallery">Motion Gallery</a>
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="#bibtex">BibTeX</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ENPIRE-Style Full-Bleed 100svh Cinema Hero -->
+  <section id="top-hero" class="enpire-hero" aria-label="VolMusCo teaser showcase">
+    <video
+      id="enpire-hero-video"
+      class="enpire-hero__video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      poster="./assets/figures/hero_teaser_poster.jpg?v=2"
+      src="./media/hero_teaser_1080p.mp4?v=2"
+    ></video>
+    <div class="enpire-hero__vignette" aria-hidden="true"></div>
+    <div id="enpire-hero-center" class="enpire-hero__center" data-revealed="false">
+      <span class="enpire-hero__wordmark" aria-label="VolMusCo">
+        <span class="enpire-hero__letter" style="animation-delay: 0.00s">V</span>
+        <span class="enpire-hero__letter" style="animation-delay: 0.09s">o</span>
+        <span class="enpire-hero__letter" style="animation-delay: 0.18s">l</span>
+        <span class="enpire-hero__letter" style="animation-delay: 0.27s">M</span>
+        <span class="enpire-hero__letter" style="animation-delay: 0.36s">u</span>
+        <span class="enpire-hero__letter" style="animation-delay: 0.45s">s</span>
+        <span class="enpire-hero__letter" style="animation-delay: 0.54s">C</span>
+        <span class="enpire-hero__letter" style="animation-delay: 0.63s">o</span>
+      </span>
+      <p class="enpire-hero__tagline">Learning Full-Body Motion Control with Volumetric Muscles</p>
+    </div>
+    <a class="scroll-cue" href="#article-content">Scroll to explore</a>
+  </section>
+
+  <!-- Main Content (Revealed on Scroll) -->
+  <main id="article-content">
+
+    <!-- Paper Header: Title, Authors, Affiliations & ONLY Paper + Code -->
+    <section class="paper-header-section">
+      <div class="container reveal-on-scroll">
+        <h1 class="paper-title">
+          <span class="paper-title-accent">VolMusCo</span>: Learning Full-Body Motion Control with Volumetric Muscles
+        </h1>
+
+        <div class="paper-authors">
+          <span class="paper-author">Wangyingqi Ding<sup>1*</sup></span>
+          <span class="paper-author">Yusen Feng<sup>2*</sup></span>
+          <span class="paper-author">Kaibo He<sup>3</sup></span>
+          <span class="paper-author">Bingchen Han<sup>2</sup></span>
+          <span class="paper-author">Libin Liu<sup>2</sup></span>
+        </div>
+
+        <div class="paper-affiliations">
+          <span><sup>1</sup>Tsinghua University</span>
+          <span><sup>2</sup>Peking University</span>
+          <span><sup>3</sup>Clone Incorporated</span>
+        </div>
+        <div class="paper-equal-note"><sup>*</sup>Equal contribution</div>
+
+        <div class="paper-actions">
+          <a id="hero-pdf-btn" href="./paper/VolMusCo_arxiv.pdf?v=2" class="action-btn is-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+            <span>Paper</span>
+          </a>
+          <a id="hero-code-btn" href="https://github.com/InckieUltra/VolMusCo" target="_blank" rel="noopener" class="action-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0.5C5.65 0.5 0.5 5.65 0.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35 0.5 12 0.5z"/></svg>
+            <span>Code</span>
+          </a>
+        </div>
+
+        <div class="metrics-row">
+          <div class="metric-card">
+            <span class="metric-val">284 Muscles</span>
+            <span class="metric-lbl">Two-Way Coupled (2,556 Tets)</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val">97.9%</span>
+            <span class="metric-lbl">LaFAN1 Tracking Success (5.52 cm)</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val">815 steps/s</span>
+            <span class="metric-lbl">Single RTX 4090 Throughput</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val">10 h</span>
+            <span class="metric-lbl">Training on a Single RTX 4090</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. Full Video (1080p, Placed First, Complete Timestamp Tags) -->
+    <section id="video" class="full-video-section">
+      <div class="container reveal-on-scroll">
+        <div class="section-header">
+          <span class="section-eyebrow">Overview &amp; Demonstrations</span>
+          <h2 class="section-title">Full Video</h2>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="video-showcase">
+          <video
+            id="featured-video"
+            controls
+            playsinline
+            preload="metadata"
+            poster="./assets/figures/full_video_poster.jpg?v=14"
+            src="./media/VolMusCo_full_1080p.mp4?v=14"
+          ></video>
+        </div>
+
+        <div id="chapter-groups" class="chapter-groups" aria-label="Video chapters"></div>
+
+        <p style="text-align: center; margin-top: 14px; font-size: 0.85rem; color: var(--text-muted);">
+          1080p HD with audio · <a id="featured-download" href="./media/VolMusCo_full_1080p.mp4?v=14" target="_blank" rel="noopener">Open / Download 1080p MP4 ↗</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. Abstract -->
+    <section id="abstract" class="band-alt">
+      <div class="container reveal-on-scroll">
+        <div class="section-header">
+          <span class="section-eyebrow">Summary</span>
+          <h2 class="section-title">Abstract</h2>
+          <div class="section-rule"></div>
+        </div>
+        <div class="abstract-box">
+          <p>
+            We present <strong>VolMusCo</strong>, a simulation and learning framework for full-body motion control driven by volumetric muscles. Our approach establishes two-way coupling between muscles and the skeleton: muscle activations induce contraction along embedded fibers, deforming the volumetric tissue and generating forces that are transmitted to the skeleton through muscle attachments and wrapping contacts. In turn, skeletal motion changes the attachment and wrapping geometry, influencing tissue deformation and force transmission. This coupling brings volumetric deformation directly into the controlled dynamics. To make learning computationally efficient, we introduce a simplified tetrahedral muscle representation that preserves essential volumetric deformation and force transmission while substantially reducing simulation cost. Building on this representation, we develop a model-based reinforcement learning framework that learns a differentiable world model from physical transitions and uses predicted future motion to improve the control policy. On LaFAN1 motion tracking, our method achieves a tracking success rate of <strong>97.9%</strong> and a mean local-body position error of <strong>5.52 cm</strong> within <strong>10 h</strong> of training.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Interactive Dual-View 9-Tet Mesh vs. Continuous Surface Split Viewer -->
+    <section id="interactive-viewer" class="band">
+      <div class="container-wide reveal-on-scroll">
+        <div class="section-header">
+          <span class="section-eyebrow">Interactive Inspection</span>
+          <h2 class="section-title">Runtime 9-Tet Mesh vs. Anatomical Surface</h2>
+          <div class="section-rule"></div>
+          <p class="section-lead">
+            Inspect the exact same closed-loop policy trajectory across two synchronized camera angles. Drag the circular handles (<strong>↔</strong>) inside View A and View B to compare the runtime <strong>9-tet deformable muscle bellies &amp; routed tendons</strong> against the reconstructed <strong>continuous muscle surface</strong>.
+          </p>
+        </div>
+
+        <div class="inspector-card">
+          <div class="inspector-toolbar">
+            <div class="inspector-title-group">
+              <h3 id="inspector-clip-title">Expressive Dance (dance2_subject1)</h3>
+              <p id="inspector-clip-meta">LaFAN1 · 10.0 s · 30 fps</p>
+            </div>
+            <div class="segmented-group" role="tablist" aria-label="Render mode">
+              <button type="button" class="segmented-btn is-active" data-inspector-mode="split">
+                <span class="mode-dot split"></span>Interactive Split
+              </button>
+              <button type="button" class="segmented-btn" data-inspector-mode="wire">
+                <span class="mode-dot wire"></span>9-Tet Coarse Mesh
+              </button>
+              <button type="button" class="segmented-btn" data-inspector-mode="solid">
+                <span class="mode-dot solid"></span>Continuous Surface
+              </button>
+            </div>
+          </div>
+
+          <div class="inspector-body">
+            <div class="inspector-stage-wrap">
+              <div id="inspector-stage" class="inspector-stage">
+                <video id="inspector-base-video" playsinline muted loop preload="metadata"></video>
+                <video id="inspector-wire-video" playsinline muted loop preload="metadata" style="clip-path: url(#dual-split-clip);"></video>
+
+                <svg class="inspector-overlay-svg" viewBox="0 0 1536 916" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <clipPath id="dual-split-clip" clipPathUnits="objectBoundingBox">
+                      <polygon id="split-poly-a" points="0,0 0.5,0 0.5,1 0,1"></polygon>
+                      <polygon id="split-poly-b" points="0.5,0 1,0 1,1 0.5,1"></polygon>
+                    </clipPath>
+                  </defs>
+                  <rect x="0" y="0" width="1536" height="52" fill="#0f172a"></rect>
+                  <line x1="768" y1="0" x2="768" y2="916" stroke="#334155" stroke-width="2"></line>
+                  <text x="24" y="33" fill="#e2e8f0" font-size="21" font-family="Inter, sans-serif" font-weight="600">View A · Primary Camera</text>
+                  <text id="inspector-banner-mode" x="792" y="33" fill="#93c5fd" font-size="20" font-family="Inter, sans-serif" font-weight="600">Interactive Split · 9-Tet Mesh vs. Surface</text>
+                  <line id="split-line-a" x1="0" y1="0" x2="0" y2="0" stroke="#f8fafc" stroke-width="2.5"></line>
+                  <line id="split-line-b" x1="0" y1="0" x2="0" y2="0" stroke="#f8fafc" stroke-width="2.5"></line>
+                </svg>
+
+                <button id="split-handle-a" type="button" class="split-handle" title="Drag to adjust View A split" aria-label="View A split handle"><span>↔</span></button>
+                <button id="split-handle-b" type="button" class="split-handle" title="Drag to adjust View B split" aria-label="View B split handle"><span>↔</span></button>
+              </div>
+
+              <div class="inspector-controls-bar">
+                <button id="inspector-play-btn" type="button" class="ctrl-btn">Play</button>
+                <input id="inspector-scrubber" type="range" class="inspector-scrubber" min="0" max="15" step="0.02" value="0" aria-label="Timeline">
+                <span id="inspector-time" class="inspector-time">0:00 / 0:10</span>
+                <label style="display:inline-flex;align-items:center;gap:6px;">
+                  <span>Speed</span>
+                  <select id="inspector-speed" class="ctrl-btn" style="padding:4px 8px;">
+                    <option value="0.25">0.25×</option>
+                    <option value="0.5">0.5×</option>
+                    <option value="1" selected>1.0×</option>
+                  </select>
+                </label>
+                <button id="inspector-fullscreen" type="button" class="ctrl-btn">Fullscreen</button>
+              </div>
+
+              <div id="inspector-sliders" class="inspector-sliders">
+                <label>
+                  <span>View A Split (<strong id="slider-val-a">50%</strong>)</span>
+                  <input id="slider-view-a" type="range" min="0" max="100" value="50">
+                </label>
+                <label>
+                  <span>View B Split (<strong id="slider-val-b">50%</strong>)</span>
+                  <input id="slider-view-b" type="range" min="0" max="100" value="50">
+                </label>
+                <button id="slider-reset-btn" type="button" class="ctrl-btn">Reset 50 / 50</button>
+              </div>
+            </div>
+
+            <aside id="inspector-playlist" class="inspector-playlist" aria-label="Interactive clip selector"></aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 3-Column Motion Gallery (55 Clips) -->
+    <section id="gallery" class="band-alt">
+      <div class="container-wide reveal-on-scroll">
+        <div class="section-header">
+          <span class="section-eyebrow">Motion &amp; Biomechanics Demonstrations</span>
+          <h2 class="section-title">Full-Body Volumetric Skill Gallery</h2>
+          <div class="section-rule"></div>
+          <p class="section-lead">
+            Explore 55 closed-loop rollouts and biomechanical studies rendered with real-time muscle activation coloring (blue to red), spanning handheld weapons, multi-load strength training, tennis returns, three-ball juggling, LaFAN1 locomotion &amp; acrobatics, monocular video tracking, muscle fatigue, shared fascial coupling, soft-tissue inertia, and RL baseline ablations.
+          </p>
+        </div>
+
+        <div class="gallery-controls">
+          <div id="gallery-tabs" class="filter-tabs" role="tablist" aria-label="Filter demonstrations by category"></div>
+          <div class="gallery-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="gallery-search-input" type="search" placeholder="Search skill, prop, load, clip...">
+          </div>
+        </div>
+
+        <div id="gallery-grid" class="gallery-grid"></div>
+
+        <div id="gallery-more-wrap" class="gallery-more-wrap" hidden>
+          <button id="gallery-more-btn" type="button" class="more-pill-btn">Show More Clips</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Method Overview & Anatomical Modeling -->
+    <section id="method" class="band">
+      <div class="container reveal-on-scroll">
+        <div class="section-header">
+          <span class="section-eyebrow">Methodology</span>
+          <h2 class="section-title">Two-Way Volumetric Coupling &amp; World-Model Learning</h2>
+          <div class="section-rule"></div>
+          <p class="section-lead">
+            Rather than driving volumetric muscles one-way from prescribed skeletal kinematics, VolMusCo places quasi-static tetrahedral tissue equilibrium directly inside the control loop and learns a differentiable world model over the resulting coupled transitions.
+          </p>
+        </div>
+
+        <div class="figure-frame">
+          <img src="./assets/figures/pipeline_unified.png" alt="VolMusCo system overview diagram">
+          <p class="figure-caption">
+            <strong>System Pipeline.</strong>
+            At 50 Hz policy control, muscle excitations drive 100 Hz quasi-static Projective Dynamics (PD) solves over 284 volumetric muscles. Skeletal pose <em>q</em> updates endpoint attachments, bone-fixed tendon waypoints, and wrapping cylinders; the converged tissue shape supplies generalized reaction wrenches integrated at 1 kHz in MJWarp. Physical replay transitions train a differentiable world model used to optimize the actor and critic over short imagined rollouts.
+          </p>
+        </div>
+
+        <div class="two-col-grid">
+          <div class="figure-frame">
+            <img src="./assets/figures/front_and_9tet.png" alt="Coarse 9-tet full-body muscle geometry">
+            <p class="figure-caption">
+              <strong>Simplified 9-Tet Muscle Representation.</strong>
+              Each of the 284 anatomical muscle units is discretized into a 10-vertex, 9-tetrahedron belly (2,840 vertices and 2,556 tetrahedra full-body) calibrated to RLMuscle anatomical volumes (30.24 L total), enabling batched GPU solves across 2,048 parallel environments.
+            </p>
+          </div>
+          <div class="figure-frame">
+            <img src="./assets/figures/three_muscle_comparison_redrawn_tnr.png" alt="Three muscle-joint interaction configurations">
+            <p class="figure-caption">
+              <strong>Three Muscle–Joint Interaction Channels.</strong>
+              (a) Deltoid bellies wrap over bone-carried cylinders via penalty contact; (b) short muscles like the subclavius attach directly to bone; (c) long tendons like the rectus femoris route through bone-fixed waypoints <em>P<sub>i</sub></em>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Quantitative Results, Biomechanics & Mechanical Ablations -->
+    <section id="results" class="band-alt">
+      <div class="container-wide reveal-on-scroll">
+        <div class="section-header">
+          <span class="section-eyebrow">Evaluation</span>
+          <h2 class="section-title">Fidelity, Force Feedback &amp; Learning Efficiency</h2>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="two-col-grid" style="margin-top: 0;">
+          <div class="figure-frame">
+            <img src="./assets/figures/mechanical_response.png" alt="Deformation-dependent force feedback and mesh resolution comparison">
+            <p class="figure-caption">
+              <strong>Deformation-Dependent Force Feedback.</strong>
+              Replaying identical activation sequences from matched initial states: (a) doubling Young's modulus (<em>E×2</em>) alters the coupled joint trajectory, whereas a frozen nominal MLP map diverges at 0.91 s; (b) 9-tet and 230-tet meshes produce closely matched trajectories (1.87° full-body RMSE).
+            </p>
+          </div>
+          <div class="figure-frame">
+            <img src="./assets/figures/learning_efficiency_algorithm.png" alt="World-model learning efficiency vs PPO and MS-Emulator">
+            <p class="figure-caption">
+              <strong>World-Model Sample &amp; Wall-Clock Efficiency.</strong>
+              Imagined rollouts with a 32-step critic horizon reach a 10 s mean episode length in <strong>9.63M transitions (3.00 GPU-h)</strong>, whereas model-free PPO fails to reach 10 s within 188.7M transitions (&gt;50.2 GPU-h).
+            </p>
+          </div>
+        </div>
+
+        <div class="two-col-grid">
+          <div class="figure-frame">
+            <img src="./assets/figures/fig_emg_walk.png" alt="Walking activation vs human surface EMG">
+            <p class="figure-caption">
+              <strong>Emergent Gait-Phase Recruitment vs. Human sEMG.</strong>
+              Without EMG supervision, walking policies recover primary burst timing across 97 strides—quadriceps in early stance (<em>r</em> = 0.63), triceps surae at push-off (<em>r</em> = 0.55), and tibialis anterior across stance-to-swing (<em>r</em> = 0.67).
+            </p>
+          </div>
+          <div class="figure-frame">
+            <img src="./assets/figures/fig_knee_torque_hill_vs_vol.png" alt="Hill line model vs volumetric joint torque at matched states">
+            <p class="figure-caption">
+              <strong>Volumetric vs. 1D Hill-Type Joint Loads.</strong>
+              Evaluated across 172k visited LaFAN1 states at identical poses and activations: volumetric and Hill knee torques correlate in trend (<em>r</em> = 0.94), but exhibit pose-dependent nonlinear differences (36–41% RMS residual after optimal gain scaling).
+            </p>
+          </div>
+        </div>
+
+        <div class="two-col-grid" style="margin-top: 28px;">
+          <div class="table-card">
+            <h3>Mesh-Resolution &amp; Actuation Benchmarks</h3>
+            <p>Full-body simulation throughput (2,048 environments on a single RTX 4090) and 47-clip LaFAN1 tracking accuracy.</p>
+            <table class="academic-table">
+              <thead>
+                <tr>
+                  <th>Configuration</th>
+                  <th>Tets / Body</th>
+                  <th>Samples / s</th>
+                  <th>Local Err.</th>
+                  <th>Success</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="is-highlight">
+                  <td>VolMusCo (9-tet)</td>
+                  <td>2,556</td>
+                  <td>815</td>
+                  <td>5.52 cm</td>
+                  <td>97.9%</td>
+                </tr>
+                <tr>
+                  <td>Fine Mesh (230-tet)</td>
+                  <td>65,320</td>
+                  <td>0.05</td>
+                  <td colspan="2">Δ<sub>T</sub> = 9.46%, Δ<sub>q</sub> = 1.87°</td>
+                </tr>
+                <tr>
+                  <td>1D Hill Line</td>
+                  <td>—</td>
+                  <td>9,030</td>
+                  <td>4.92 cm</td>
+                  <td>97.9%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-card">
+            <h3>Solver &amp; Learning Horizon Ablations</h3>
+            <p>Batched two-biceps warm-start solver latency (256 worlds) and world-model horizon scaling.</p>
+            <table class="academic-table">
+              <thead>
+                <tr>
+                  <th>Method / Solver</th>
+                  <th>Latency / Budget</th>
+                  <th>Key Metric</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="is-highlight">
+                  <td>Projective Dynamics (Ours)</td>
+                  <td>2.23 ms / batch</td>
+                  <td>0.020 N·m torque diff vs. Newton</td>
+                </tr>
+                <tr>
+                  <td>Routed Tet FEM (Newton)</td>
+                  <td>133.0 ms / batch</td>
+                  <td>Reference exact Newton solve</td>
+                </tr>
+                <tr>
+                  <td>Quasi-Static TL-MPM</td>
+                  <td>113.6 ms / batch</td>
+                  <td>5.09 N·m torque discrepancy</td>
+                </tr>
+                <tr class="is-highlight">
+                  <td>World Model (Critic H = 32)</td>
+                  <td>3.00 GPU-h @ 10 s</td>
+                  <td>506.5 steps mean ep. length</td>
+                </tr>
+                <tr>
+                  <td>Model-Free PPO</td>
+                  <td>&gt;50.2 GPU-h @ 10 s</td>
+                  <td>31.6 steps mean ep. length</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="margin-top: 44px;">
+          <div class="section-header" style="margin-bottom: 20px;">
+            <h3 style="margin:0; font-size: 1.35rem; font-weight: 800;">Extended Biomechanical &amp; Numerical Studies</h3>
+          </div>
+
+          <div id="study-tabs" class="study-tabs" role="tablist">
+            <button type="button" class="filter-tab is-active" data-study-tab="sequences">Chronophotography Sequences</button>
+            <button type="button" class="filter-tab" data-study-tab="solver">PD vs. FEM Newton &amp; MPM</button>
+            <button type="button" class="filter-tab" data-study-tab="fatigue">Running with Muscle Fatigue</button>
+            <button type="button" class="filter-tab" data-study-tab="fascia">Shared Calf Fascial Sleeve</button>
+            <button type="button" class="filter-tab" data-study-tab="inertia">Muscle Mass &amp; Inertia</button>
+          </div>
+
+          <div class="figure-frame" data-study-panel="sequences">
+            <img src="./assets/figures/supp-motion-sequences.png" alt="Chronophotography sequences of tennis, dance, backflip, three-ball juggling, 80 kg barbell deadlift, and sword-and-shield">
+            <p class="figure-caption">
+              <strong>Closed-Loop Volumetric Motion Sequences.</strong>
+              Chronologically ordered snapshots across diverse whole-body skills: tennis ball returns, expressive dance, standing backflip, three-ball cascade juggling, 80 kg barbell deadlift, and sword-and-shield combat. Muscle color indicates real-time activation from blue (0) to red (1).
+            </p>
+          </div>
+
+          <div class="figure-frame" data-study-panel="solver" hidden>
+            <img src="./assets/figures/elbow_solver_driven_sequence_fem_pd_mpm_anatomical.png" alt="Elbow flexion across FEM Newton, VolMusCo PD, and MPM">
+            <p class="figure-caption">
+              <strong>Muscle-Driven Elbow Flexion Across Solvers.</strong>
+              Driven by identical activations, our batched Projective Dynamics solver (middle) matches full FEM Newton (top) within 0.020 N·m while running <strong>59.6× faster</strong> (2.23 ms vs. 133.0 ms per 256-world batch). Quasi-static MPM (bottom) under-flexes due to grid-to-tendon transfer stiffness differences.
+            </p>
+          </div>
+
+          <div class="figure-frame" data-study-panel="fatigue" hidden>
+            <video controls muted loop playsinline preload="metadata" poster="./media/additional/fatigue_running.jpg" src="./media/additional/fatigue_running.mp4" style="width:100%; border-radius:8px; margin-bottom:16px; background:#0f172a;"></video>
+            <img src="./assets/figures/fatigue_gait_touchdowns_wide.png" alt="Running gait across three muscle fatigue stages">
+            <p class="figure-caption">
+              <strong>Long-Horizon Running Under 3CC-r Muscle Fatigue.</strong>
+              Coupling a three-compartment fatigue state into the 284 volumetric muscles naturally induces progressive stride shortening from <strong>1.62 m → 1.10 m → 0.78 m</strong> as peak muscle fatigue accumulates; fine-tuning with fatigue extends survival from 92.60 s to 124.58 s.
+            </p>
+          </div>
+
+          <div class="figure-frame" data-study-panel="fascia" hidden>
+            <video controls muted loop playsinline preload="metadata" poster="./media/additional/shared_fascia.jpg" src="./media/additional/shared_fascia.mp4" style="width:100%; border-radius:8px; margin-bottom:16px; background:#f8fafc;"></video>
+            <img src="./assets/figures/fascia_rest_knee_ankle_compact_v200.png" alt="Calf muscle deformation with and without shared fascial sleeve">
+            <p class="figure-caption">
+              <strong>Local Fascial Coupling in a Three-Muscle Calf Compartment.</strong>
+              Packing the medial/lateral gastrocnemius and soleus inside a tension-only hexagonal tibial sleeve with sliding unilateral contact eliminates inter-belly overlap (hatched in A–A′) and limits outward bulging at 1.58× solve cost.
+            </p>
+          </div>
+
+          <div class="figure-frame" data-study-panel="inertia" hidden>
+            <video controls muted loop playsinline preload="metadata" poster="./media/additional/muscle_inertia_closeup.jpg" src="./media/additional/muscle_inertia_closeup.mp4" style="width:100%; border-radius:8px; margin-bottom:16px; background:#ffffff;"></video>
+            <img src="./assets/figures/forearm_inertia_sequence_0p075.png" alt="Effect of muscle inertia during elbow flexion">
+            <p class="figure-caption">
+              <strong>Quasi-Static vs. Inertial Tissue Prototype.</strong>
+              Adding backward-Euler vertex mass produces soft-tissue oscillations during rapid elbow flexion (middle) that compliant 0.075 kN/m attachments damp (bottom), motivating our quasi-static belly + inertial skeleton split for scalable full-body RL.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. BibTeX -->
+    <section id="bibtex" class="band">
+      <div class="container reveal-on-scroll">
+        <div class="bibtex-header">
+          <h2>BibTeX</h2>
+          <button id="copy-bibtex-btn" type="button" class="copy-btn">Copy BibTeX</button>
+        </div>
+        <pre id="bibtex-code" class="bibtex-pre"><code>@article{ding2026volmusco,
+  title   = {VolMusCo: Learning Full-Body Motion Control with Volumetric Muscles},
+  author  = {Ding, Wangyingqi and Feng, Yusen and He, Kaibo and Han, Bingchen and Liu, Libin},
+  journal = {arXiv preprint},
+  year    = {2026}
+}</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p><strong>VolMusCo: Learning Full-Body Motion Control with Volumetric Muscles</strong> · Tsinghua University, Peking University &amp; Clone Incorporated</p>
+      <p>Page layout inspired by <a href="https://research.nvidia.com/labs/gear/enpire/" target="_blank" rel="noopener">ENPIRE</a> and <a href="https://nerfies.github.io/" target="_blank" rel="noopener">Nerfies</a>, licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.</p>
+    </div>
+  </footer>
+
+  <button id="scroll-top-btn" type="button" class="scroll-top-btn" aria-label="Scroll to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <script src="./assets/js/data.js"></script>
+  <script src="./assets/js/app.js"></script>
+</body>
+</html>
